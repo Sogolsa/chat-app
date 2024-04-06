@@ -50,16 +50,17 @@ const Start = ({ navigation }) => {
             ))}
           </View>
           <View style={styles.buttonContainer}>
-            <Button
-              title='Start Chatting'
-              color='#FFFFFF'
+            <TouchableOpacity
+              style={styles.button}
               onPress={() =>
                 navigation.navigate('Chat', {
                   name: name,
                   selectedColor: selectedColor,
                 })
               }
-            />
+            >
+              <Text style={styles.buttonText}>Start Chatting</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ImageBackground>
@@ -130,6 +131,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '88%',
     paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
   },
 });
 export default Start;
