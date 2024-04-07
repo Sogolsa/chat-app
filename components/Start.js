@@ -2,7 +2,8 @@ import {
   StyleSheet,
   View,
   Text,
-  Button,
+  Platform,
+  KeyboardAvoidingView,
   TextInput,
   TouchableOpacity,
   ImageBackground,
@@ -35,6 +36,10 @@ const Start = ({ navigation }) => {
           <View style={styles.colorOptionsContainer}>
             {colorOptions.map((color, index) => (
               <TouchableOpacity
+                accessibility={true}
+                accessibilityLabel='background color'
+                accessibilityHint='lets you chose your background color'
+                accessibilityRole='button'
                 key={index}
                 style={[
                   styles.colorOption,
@@ -51,6 +56,10 @@ const Start = ({ navigation }) => {
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
+              accessibility={true}
+              accessibilityLabel='Start chatting'
+              accessibilityHint='Takes you to the chat room'
+              accessibilityRole='button'
               style={styles.button}
               onPress={() =>
                 navigation.navigate('Chat', {
@@ -63,6 +72,12 @@ const Start = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
+        {Platform.OS === 'android' ? (
+          <KeyboardAvoidingView behavior='height' />
+        ) : null}
+        {Platform.OS === 'ios' ? (
+          <KeyboardAvoidingView behavior='padding' />
+        ) : null}
       </ImageBackground>
     </View>
   );
