@@ -6,7 +6,7 @@ import {
   Platform,
   KeyboardAvoidingView,
 } from 'react-native';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 import {
   collection,
   addDoc,
@@ -14,32 +14,61 @@ import {
   orderBy,
   query,
 } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Chat = ({ route, navigation, db }) => {
+const Chat = ({ route, navigation, db, isConnected }) => {
   const { name, selectedColor } = route.params;
   const [messages, setMessages] = useState([]);
 
+  let unsubMessages;
   // Effect hook to set the user name, service message and user message
   useEffect(() => {
     navigation.setOptions({ title: name });
-    const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
-    const unsubMessages = onSnapshot(q, (documentSnapshot) => {
-      let newMessages = [];
-      documentSnapshot.forEach((doc) => {
-        newMessages.push({
-          id: doc.id,
-          ...doc.data(),
-          // Convert Firestore Timestamp to JavaScript Date
-          createdAt: new Date(doc.data().createdAt.toMillis()),
+    if (isConnected === true) {
+      // unregister current onSnapshot() listener to avoid registering multiple listeners when
+      // useEffect code is re-executed.
+      if (unsubMessages) unsubMessages();
+      unsubMessages = null;
+      const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
+
+      // Subscribe to changes in the "messages" collection using onSnapshot.
+      // This function will be called whenever there are changes in the collection.
+      unsubMessages = onSnapshot(q, (documentSnapshot) => {
+        let newMessages = [];
+        // Iterate through each document in the snapshot
+        documentSnapshot.forEach((doc) => {
+          newMessages.push({
+            id: doc.id,
+            ...doc.data(),
+            // Convert Firestore Timestamp to JavaScript Date
+            createdAt: new Date(doc.data().createdAt.toMillis()),
+          });
         });
+        cacheMessages(newMessages);
+        setMessages(newMessages);
       });
-      setMessages(newMessages);
-    });
+    } else loadCachedMessages();
+
     // Clean up code to avoid memory leakage
     return () => {
       if (unsubMessages) unsubMessages();
     };
-  }, []);
+  }, [isConnected]);
+
+  // try-catch a safety measure to prevent the app from crashing in case AsyncStorage fails to store the data.
+  const cacheMessages = async (messagesToCache) => {
+    try {
+      await AsyncStorage.setItem('messages', JSON.stringify(messagesToCache));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const loadCachedMessages = async () => {
+    // Assign an empty array to cachedMessages in case AsyncStorage... fails, when messages item hasn't been set yet
+    const cachedMessages = (await AsyncStorage.getItem('messages')) || [];
+    setMessages(JSON.parse(cachedMessages));
+  };
 
   // Function to handle sending messages
   const onSend = (newMessages) => {
@@ -63,11 +92,17 @@ const Chat = ({ route, navigation, db }) => {
     );
   };
 
+  const renderInputToolbar = (props) => {
+    if (isConnected) return <InputToolbar {...props} />;
+    else return null;
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: selectedColor }]}>
       <GiftedChat
         messages={messages}
         renderBubble={renderBubble}
+        renderInputToolbar={renderInputToolbar}
         onSend={(messages) => onSend(messages)}
         user={{
           _id: route.params.userID,
