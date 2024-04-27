@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useEffect } from 'react';
+import { getStorage } from 'firebase/storage';
 
 import Start from './components/Start';
 import Chat from './components/Chat';
@@ -52,6 +53,9 @@ const App = () => {
   // allowing the React Native app to read and write data to and from the database
   const db = getFirestore(app);
 
+  //Initializing a handler for to Firestore Storage for uploading the blob into firebase storage
+  const storage = getStorage(app);
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Start'>
@@ -61,6 +65,7 @@ const App = () => {
             <Chat
               isConnected={connectionStatus.isConnected}
               db={db}
+              storage={storage}
               {...props}
             />
           )}
