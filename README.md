@@ -17,16 +17,16 @@ At the time of writing, Expo only supports Node 16.. at max.
 
 - Initial a new node.js (npm init)
 - Node version 16.19.0
-  nvm install 16.19.0
-  nvm use 16.19.0
-  nvm alias default 16.19.0
-- Install dependencies: npm install
+  `nvm install 16.19.0`
+  `nvm use 16.19.0`
+  `nvm alias default 16.19.0`
+- Install dependencies: `npm install`
 
 ## Dependencies
 
 - Create a react-native project using expo:
-- Install expo CLI globally (npm install -g expo-cli)
-- Google Firebase: for backend server (data storage) npm install firebase@10.3.1 --save
+- Install expo CLI globally `npm install -g expo-cli`
+- Google Firebase: for backend server (data storage) `npm install firebase@10.3.1 --save`
 - Gifted Chat Library
 - Expo ImagePicker
 - Expo MediaLibrary
@@ -38,7 +38,7 @@ At the time of writing, Expo only supports Node 16.. at max.
 1. Clone this repository: git clone https://github.com/Sogolsa/chat-app.git
 2. Set up Expo:
 
-- Install expo CLI: npm install -g expo-cli
+- Install expo CLI: `npm install -g expo-cli`
 - Install expo go app
 - Create and expo account
 
@@ -59,7 +59,7 @@ At the time of writing, Expo only supports Node 16.. at max.
 - Start in production mode
 - Under Data Tab > click "Start Collection" > choose a name (messages)
 - Click on "Auto ID" to auto-generate a document ID > Save. (New messages will be saved in this collection)
-- Click on the "Rules Tab": allow read, write: if true;
+- Click on the "Rules Tab": `allow read, write: if true;`
 - Click Publish
 - Choose a platform to start the app:
   Project Setting (left-hand side) > General Tab > Your Apps > Web (</>).
@@ -74,9 +74,9 @@ At the time of writing, Expo only supports Node 16.. at max.
 ### Set up Firebase Storage
 
 - Build > Storage > Get Started > Default options > Next
-- Rules Tab > allow read, write: if true;
+- Rules Tab > `allow read, write: if true;`
 - Publish
 
 ## Download Expo Go on Your Mobile Device and Android Studio on Your Device
 
-npx expo start
+`npx expo start`
