@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 import { TouchableOpacity, View, Text, StyleSheet, Alert } from 'react-native';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import * as Location from 'expo-location';
@@ -14,6 +15,7 @@ const CustomActions = ({
   userID,
 }) => {
   const actionSheet = useActionSheet();
+
   const onActionPress = () => {
     const options = [
       'Choose From Library',
@@ -37,6 +39,7 @@ const CustomActions = ({
             return;
           case 2:
             getLocation();
+            return;
           default:
         }
       }
@@ -46,6 +49,7 @@ const CustomActions = ({
   // Generate unique reference to be able to upload multiple images
   const generateReference = (uri) => {
     const timeStamp = new Date().getTime();
+    // gets the file path , then separate by / and gets index of last array element -> name of img
     const imageName = uri.split('/')[uri.split('/') - 1];
     return `${userID}-${timeStamp}-${imageName}`;
   };
@@ -80,7 +84,7 @@ const CustomActions = ({
     let permissions = await ImagePicker.requestCameraPermissionsAsync();
     if (permissions?.granted) {
       let result = await ImagePicker.launchCameraAsync();
-      if (!result.canceled) await uploadAndSendImage();
+      if (!result.canceled) await uploadAndSendImage(result.assets[0].uri);
       else Alert.alert('Permissions have not been granted.');
     }
   };
