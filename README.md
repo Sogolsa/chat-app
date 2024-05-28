@@ -80,3 +80,6 @@ At the time of writing, Expo only supports Node 16.. at max.
 ## Download Expo Go on Your Mobile Device and Android Studio on Your Device
 
 `npx expo start`
+
+- If it doesn't connect try `npx expo start --tunnel`
+- Make sure the IP address on your computer matches the expo IP
